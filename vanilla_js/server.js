@@ -106,7 +106,7 @@ app.get("/oauth", async (req, res) => {
 
 // Create a link token with configs which we can then use to initialize Plaid Link client-side.
 // See https://plaid.com/docs/#create-link-token
-app.post('/api/create_link_token', function (request, response, next) {
+app.get('/api/create_link_token', function (request, response, next) {
   Promise.resolve()
     .then(async function () {
       const configs = {
@@ -146,7 +146,7 @@ app.post('/api/create_link_token', function (request, response, next) {
 // See:
 // - https://plaid.com/docs/payment-initiation/
 // - https://plaid.com/docs/#payment-initiation-create-link-token-request
-app.post(
+app.get(
   '/api/create_link_token_for_payment',
   function (request, response, next) {
     Promise.resolve()
@@ -212,7 +212,7 @@ app.post(
 // Exchange token flow - exchange a Link public_token for
 // an API access_token
 // https://plaid.com/docs/#exchange-token-flow
-app.post('/api/set_access_token', function (request, response, next) {
+app.post('/api/exchange_public_token', function (request, response, next) {
   PUBLIC_TOKEN = request.body.public_token;
   Promise.resolve()
     .then(async function () {
@@ -638,4 +638,9 @@ app.get('/api/signal_evaluate', function (request, response, next) {
       response.json(signalEvaluateResponse.data);
     })
     .catch(next);
+});
+// Checks whether the user's account is connected, called
+// in index.html when redirected from oauth.html
+app.get("/api/is_account_connected", (req, res) => {
+  res.json({ status: Boolean(ACCESS_TOKEN) });
 });
