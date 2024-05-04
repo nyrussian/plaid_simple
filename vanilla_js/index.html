@@ -113,11 +113,12 @@
     <h1 class="header">Credit Card Info</h1>
 <button onclick="addTestRow()">Add Test Row</button>
 <button type="button"id="link-account"><strong>Link account</strong></button>
-
-<!-- <button ondblclick="addAccount()">Add Account (double click)</button> -->
+<button type="button"id="fetch_accounts">Fetch Accounts</button>
 <table id="infoTable">
     <thead>
         <tr>
+            <th>id</th>
+            <th>user </th>
             <th>Account Name</th>
             <th>Account Number</th>
             <th>Total Balance</th>
@@ -126,8 +127,14 @@
             <th>Last Payment Date</th>
             <th>Last Payment Amount</th>
             <th>Next Payment Due</th>
-            <th>Refresh</th>
-            <th>Total</th>
+            <th>due date</th>
+            <th>Pay Date</th>
+            <th>Statement Balance</th>
+            <th>Account type</th>
+            <th>Buisness account?</th>
+
+            <th>action</th>
+           
         </tr>
     </thead>
     <tbody>
@@ -156,6 +163,54 @@
         let refreshCell = newRow.insertCell(8);
         refreshCell.innerHTML = '<button onclick="refreshRow(this)">Refresh</button> <button onclick="deleteRow(this)">Delete</button>';
     }
+//update table from database
+function updateTable(accounts) {
+    const tableBody = document.getElementById('infoTable').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = ''; // Clear existing table rows
+
+    accounts.forEach(account => {
+        const row = tableBody.insertRow();
+        const id = row.insertCell(0);
+        const user = row.insertCell(1);
+        const account_name = row.insertCell(2);
+        const account_number = row.insertCell(3);
+        const total_bal = row.insertCell(4);
+        const credit_limit = row.insertCell(5);
+        const interest_rate = row.insertCell(6);
+        const last_payment_date = row.insertCell(7);
+        const last_payment_amount = row.insertCell(8);
+        const next_payment_due = row.insertCell(9);
+        const due_date = row.insertCell(10);
+        const pay_date = row.insertCell(11);
+        const statement_balance = row.insertCell(12);
+        const account_type = row.insertCell(13);
+        const buisness_account = row.insertCell(14);
+        const action  = row.insertCell(15);
+
+        id.textContent = account.id;
+        user.textContent = account.user_id;
+        account_name.textContent = account.account_name;
+        account_number.textContent = account.account_number;
+        total_bal.textContent = account.total_bal;
+        credit_limit.textContent = account.credit_limit;
+        interest_rate.textContent = account.rate;
+        last_payment_date.textContent = account.last_payment_date;
+        last_payment_amount.textContent = account.last_payment_amount;
+        next_payment_due.textContent = account.due_date;
+        due_date.textContent = account.due_date;
+        pay_date.textContent = account.pay_date;
+        statement_balance.textContent = account.statement_bal;
+        account_type.textContent = account.type;
+        buisness_account.textContent = account.buisness; 
+        action.innerHTML = '<button onclick="refreshRow(this)">Refresh</button> <button onclick="deleteRow(this)">Delete</button>';
+
+
+        
+    });
+}
+
+
+
 
     function refreshRow(button) {
         // Function to refresh a row
@@ -168,6 +223,31 @@
         let table = row.parentNode.parentNode;
         table.deleteRow(row.rowIndex);
     }
+    // async function fetchFromDb() {
+    //   const response = await fetch("/api/accountData", {
+    //     method: "GET",
+    //   });
+    //   const data = await response.json();
+    //   return data;
+    // }
+
+    const fetchAccountsButton = document.getElementById("fetch_accounts");
+    fetchAccountsButton.addEventListener("click", fetchAccounts);
+    
+    async function fetchAccounts() {
+      try {
+        const response = await fetch('/api/accountData/');
+        const data = await response.json();
+        
+      updateTable(data);
+        // const dbDataElement = document.getElementById("db_data");
+        // dbDataElement.innerHTML = JSON.stringify(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+   
+
   </script>
     <pre
       id="response"
@@ -180,17 +260,7 @@
         font-size: 14px;
       "
     ></pre>
-    <pre
-    id="liabilities_response"
-    style="
-      top: 60;
-      margin-left: 10;
-      bottom: 0;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      font-size: 14px;
-    "
-  ></pre>
+    <div id ="db_data"></div>
 
   </body>
 </html>

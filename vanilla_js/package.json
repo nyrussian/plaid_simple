@@ -14,10 +14,11 @@
   "dependencies": {
     "body-parser": "1.18.x",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
+    "dotenv": "^8.6.0",
     "ejs": "2.5.x",
     "express": "4.16.x",
     "moment": "2.22.x",
+    "mysql2": "^3.9.7",
     "nodemon": "^2.0.20",
     "plaid": "^21.0.0",
     "uuid": "^9.0.0"

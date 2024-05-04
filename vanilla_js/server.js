@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 const moment = require('moment');
 const cors = require('cors');
 const path = require("path");
+const { fetchAccounts } = require('./database');
 
 
 
@@ -643,4 +644,15 @@ app.get('/api/signal_evaluate', function (request, response, next) {
 // in index.html when redirected from oauth.html
 app.get("/api/is_account_connected", (req, res) => {
   res.json({ status: Boolean(ACCESS_TOKEN) });
+});
+
+
+//database queries
+app.get('/api/accountData', async (req, res) => {
+  try {
+      const accounts = await fetchAccounts();
+      res.json(accounts);
+  } catch (error) {
+      res.status(500).send('Failed to fetch accounts');
+  }
 });
