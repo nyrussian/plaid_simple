@@ -77,6 +77,17 @@ app.get("/api/data", async (req, res, next) => {
   });
 });
 
+// Retrieve Liabilities data for an Item
+app.get("/api/data", async (req, res, next) => {
+  // const access_token = req.session.access_token;
+  const liabilityResponse = await client.liabilitiesGet({ access_token });
+  res.json({
+    Liabilities: liabilityResponse.data,
+  });
+});
+
+
+
 // Checks whether the user's account is connected, called
 // in index.html when redirected from oauth.html
 app.get("/api/is_account_connected", async (req, res, next) => {

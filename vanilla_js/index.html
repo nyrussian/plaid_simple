@@ -1,6 +1,18 @@
 <!-- index.html – Links a sample bank account and renders balance information associated with the account. -->
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Credit Card Info</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .header { font-size: 24px; margin-bottom: 20px; }
+    button { padding: 5px 10px; margin-top: 10px; }
+</style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
     <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
     <script>
@@ -68,9 +80,8 @@
       getStatus();
     </script>
   </head>
-  <title>Plaid | Minimal Quickstart</title>
   <body>
-    <button
+    <!-- <button
       type="button"
       id="link-account"
       class="btn btn-primary btn-dark btn-lg"
@@ -87,18 +98,78 @@
       "
     >
       <strong>Link account</strong>
-    </button>
+    </button> -->
+    
+    <h1 class="header">Credit Card Info</h1>
+<button onclick="addTestRow()">Add Test Row</button>
+<button type="button"id="link-account"><strong>Link account</strong></button>
+
+<!-- <button ondblclick="addAccount()">Add Account (double click)</button> -->
+<table id="infoTable">
+    <thead>
+        <tr>
+            <th>Account Name</th>
+            <th>Account Number</th>
+            <th>Total Balance</th>
+            <th>Credit Limit</th>
+            <th>Interest Rate</th>
+            <th>Last Payment Date</th>
+            <th>Last Payment Amount</th>
+            <th>Next Payment Due</th>
+            <th>Refresh</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be added here by JavaScript -->
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="9">Total</td>
+            <td id="totalAmount"></td>
+        </tr>
+    </tfoot>
+</table>
+
+
+<script>
+    function addTestRow() {
+        // Function to add an account
+        const table = document.getElementById('infoTable').getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow(table.rows.length);
+
+        for (let i = 0; i < 9; i++) {
+            let newCell = newRow.insertCell(i);
+            newCell.innerHTML = 'New data'; // Placeholder, replace with actual data
+        }
+        
+        let refreshCell = newRow.insertCell(8);
+        refreshCell.innerHTML = '<button onclick="refreshRow(this)">Refresh</button> <button onclick="deleteRow(this)">Delete</button>';
+    }
+
+    function refreshRow(button) {
+        // Function to refresh a row
+        alert("Refresh row " + button.parentNode.parentNode.rowIndex);
+    }
+
+    function deleteRow(button) {
+        // Function to delete a row
+        let row = button.parentNode.parentNode;
+        let table = row.parentNode.parentNode;
+        table.deleteRow(row.rowIndex);
+    }
+  </script>
     <pre
       id="response"
       style="
         top: 60;
         margin-left: 10;
         bottom: 0;
-        position: fixed;
         overflow-y: scroll;
         overflow-x: hidden;
         font-size: 14px;
       "
     ></pre>
+
   </body>
 </html>
