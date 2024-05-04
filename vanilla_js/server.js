@@ -332,8 +332,10 @@ app.get('/api/balance', function (request, response, next) {
       const balanceResponse = await client.accountsBalanceGet({
         access_token: ACCESS_TOKEN,
       });
+      generateCreditCardSQL(balanceResponse);
       prettyPrintResponse(balanceResponse);
       response.json(balanceResponse.data);
+      
     })
     .catch(next);
 });
@@ -656,3 +658,7 @@ app.get('/api/accountData', async (req, res) => {
       res.status(500).send('Failed to fetch accounts');
   }
 });
+
+
+
+
