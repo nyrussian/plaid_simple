@@ -99,13 +99,17 @@ app.post('/api/info', function (request, response, next) {
     products: PLAID_PRODUCTS,
   });
 });
-app.get("/", async (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
 
-app.get("/oauth", async (req, res) => {
-  res.sendFile(path.join(__dirname, "oauth.html"));
-});
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views')));
+
+// app.get("/", async (req, res) => {
+//   res.sendFile(path.join(__dirname, "index.html"));
+// });
+
+// app.get("/oauth", async (req, res) => {
+//   res.sendFile(path.join(__dirname, "oauth.html"));
+// });
 
 // Create a link token with configs which we can then use to initialize Plaid Link client-side.
 // See https://plaid.com/docs/#create-link-token

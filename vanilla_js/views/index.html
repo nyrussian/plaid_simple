@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Credit Card Info</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .header { font-size: 24px; margin-bottom: 20px; }
+    button { padding: 5px 10px; margin-top: 10px; }
+</style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+   
+  </head>
+  <body>
+    <!-- <button
+      type="button"
+      id="link-account"
+      class="btn btn-primary btn-dark btn-lg"
+      style="
+        border: 1px solid black;
+        border-radius: 5px;
+        background: black;
+        height: 48px;
+        width: 155px;
+        margin-top: 5; 
+        margin-left: 10;
+        color: white;
+        font-size: 18px;
+      "
+    >
+      <strong>Link account</strong>
+    </button> -->
+    
+    <h1 class="header">Credit Card Info</h1>
+<button onclick="addTestRow()">Add Test Row</button>
+<button type="button" id="link-account"><strong>Link account</strong></button>
+<button type="button" id="fetch_accounts">Fetch Accounts</button>
+<table id="accountsTable">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>user </th>
+            <th>Account Name</th>
+            <th>Account Number</th>
+            <th>Total Balance</th>
+            <th>Credit Limit</th>
+            <th>Interest Rate</th>
+            <th>Last Payment Date</th>
+            <th>Last Payment Amount</th>
+            <th>Next Payment Due</th>
+            <th>due date</th>
+            <th>Pay Date</th>
+            <th>Statement Balance</th>
+            <th>Account type</th>
+            <th>Bank</th>
+
+            <th>action</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be added here by JavaScript -->
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="9">Total</td>
+            <td id="totalAmount"></td>
+        </tr>
+    </tfoot>
+</table>
+
+
+<!-- Banks Table -->
+
+<h1 class="header">Banks</h1>
+<button type="button" id="fetch_banks">Fetch Banks</button>
+<table id="banksTable">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>user </th>
+            <th>item id </th>
+            <th>bank name</th>
+            <th>token</th>
+            <th>action</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be added here by JavaScript -->
+    </tbody>
+   
+</table>
+
+<script>
+
+  </script>
+    <pre
+      id="response"
+      style="
+        top: 60;
+        margin-left: 10;
+        bottom: 0;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        font-size: 14px;
+      "
+    ></pre>
+    <div id ="db_data"></div>
+    <script src="/scripts.js"></script>
+  </body>
+</html>
