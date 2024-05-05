@@ -37,7 +37,7 @@
                 "Content-Type": "application/json",
               },
             });
-            await getProducts();
+            // await getProducts();
           },
           onEvent: (eventName, metadata) => {
             console.log("Event:", eventName);
@@ -60,7 +60,7 @@
         const response = await fetch("/api/balance", {
           method: "GET",
         });
-        
+
         const data = await response.json();
         const liabilities_response = await fetch("/api/liabilities", {
           method: "GET",
@@ -115,7 +115,7 @@
 <button onclick="addTestRow()">Add Test Row</button>
 <button type="button"id="link-account"><strong>Link account</strong></button>
 <button type="button"id="fetch_accounts">Fetch Accounts</button>
-<table id="infoTable">
+<table id="accountsTable">
     <thead>
         <tr>
             <th>id</th>
@@ -132,7 +132,7 @@
             <th>Pay Date</th>
             <th>Statement Balance</th>
             <th>Account type</th>
-            <th>Buisness account?</th>
+            <th>Bank</th>
 
             <th>action</th>
            
@@ -150,10 +150,32 @@
 </table>
 
 
+<!-- Banks Table -->
+
+<h1 class="header">Banks</h1>
+<button type="button"id="fetch_banks">Fetch Banks</button>
+<table id="banksTable">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>user </th>
+            <th>item id </th>
+            <th>bank name</th>
+            <th>token</th>
+            <th>action</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be added here by JavaScript -->
+    </tbody>
+   
+</table>
+
 <script>
     function addTestRow() {
         // Function to add an account
-        const table = document.getElementById('infoTable').getElementsByTagName('tbody')[0];
+        const table = document.getElementById('accountsTable').getElementsByTagName('tbody')[0];
         const newRow = table.insertRow(table.rows.length);
 
         for (let i = 0; i < 9; i++) {
@@ -165,8 +187,33 @@
         refreshCell.innerHTML = '<button onclick="refreshRow(this)">Refresh</button> <button onclick="deleteRow(this)">Delete</button>';
     }
 //update table from database
-function updateTable(accounts) {
-    const tableBody = document.getElementById('infoTable').getElementsByTagName('tbody')[0];
+function updateBanksTable(banks) {
+    const tableBody = document.getElementById('banksTable').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = ''; // Clear existing table rows
+
+    banks.forEach(bank => {
+        const row = tableBody.insertRow();
+        const id = row.insertCell(0);
+        const user = row.insertCell(1);
+        const item_id = row.insertCell(2);
+        const bank_name = row.insertCell(3);
+        const token = row.insertCell(4);
+        const action  = row.insertCell(5);
+
+        id.textContent = bank.id;
+        user.textContent = bank.user_id;
+        item_id.textContent = bank.item_id;
+        bank_name.textContent = bank.bank_name;
+        token.textContent = bank.access_token;
+        action.innerHTML = '<button onclick="refreshRow(this)">Refresh</button> <button onclick="deleteRow(this)">Delete</button>';
+
+
+        
+    });
+}
+
+function updateAccountsTable(accounts) {
+    const tableBody = document.getElementById('accountsTable').getElementsByTagName('tbody')[0];
     tableBody.innerHTML = ''; // Clear existing table rows
 
     accounts.forEach(account => {
@@ -202,15 +249,13 @@ function updateTable(accounts) {
         pay_date.textContent = account.pay_date;
         statement_balance.textContent = account.statement_bal;
         account_type.textContent = account.type;
-        buisness_account.textContent = account.buisness; 
+        buisness_account.textContent = account.bank; 
         action.innerHTML = '<button onclick="refreshRow(this)">Refresh</button> <button onclick="deleteRow(this)">Delete</button>';
 
 
         
     });
 }
-
-
 
 
     function refreshRow(button) {
@@ -232,15 +277,34 @@ function updateTable(accounts) {
     //   return data;
     // }
 
-    const fetchAccountsButton = document.getElementById("fetch_accounts");
-    fetchAccountsButton.addEventListener("click", fetchAccounts);
+ 
+// Correct assignment for the event listeners
+const fetchAccountsButton = document.getElementById("fetch_accounts");
+fetchAccountsButton.addEventListener("click", fetchAccounts);
+
+const fetchBanksButton = document.getElementById("fetch_banks");
+fetchBanksButton.addEventListener("click", fetchBanks);
+
+
+    async function fetchBanks() {
+      try {
+        const response = await fetch('/api/bankData');
+        const data = await response.json();
+        
+      updateBanksTable(data);
+        // const dbDataElement = document.getElementById("db_data");
+        // dbDataElement.innerHTML = JSON.stringify(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
     
     async function fetchAccounts() {
       try {
-        const response = await fetch('/api/accountData/');
+        const response = await fetch('/api/accountData');
         const data = await response.json();
         
-      updateTable(data);
+      updateAccountsTable(data);
         // const dbDataElement = document.getElementById("db_data");
         // dbDataElement.innerHTML = JSON.stringify(data);
       } catch (error) {

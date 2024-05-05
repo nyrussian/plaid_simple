@@ -1,6 +1,7 @@
 'use strict';
 
 // read env vars from .env file
+
 require('dotenv').config();
 const { Configuration, PlaidApi, Products, PlaidEnvironments} = require('plaid');
 const util = require('util');
@@ -10,7 +11,8 @@ const bodyParser = require('body-parser');
 const moment = require('moment');
 const cors = require('cors');
 const path = require("path");
-const { fetchAccounts } = require('./database');
+const database = require('./database');
+
 
 
 
@@ -220,15 +222,17 @@ app.post('/api/exchange_public_token', function (request, response, next) {
       const tokenResponse = await client.itemPublicTokenExchange({
         public_token: PUBLIC_TOKEN,
       });
-      prettyPrintResponse(tokenResponse);
+      // prettyPrintResponse(tokenResponse);
       ACCESS_TOKEN = tokenResponse.data.access_token;
       ITEM_ID = tokenResponse.data.item_id;
-      response.json({
-        // the 'access_token' is a private token, DO NOT pass this token to the frontend in your production environment
-        access_token: ACCESS_TOKEN,
-        item_id: ITEM_ID,
-        error: null,
-      });
+      let BANK_NAME = "Chase";
+      // response = response.json({
+      //   // the 'access_token' is a private token, DO NOT pass this token to the frontend in your production environment
+      //   access_token: ACCESS_TOKEN,
+      //   item_id: ITEM_ID,
+      //   error: null,
+      // });
+      database.storeAccessToken(ACCESS_TOKEN, ITEM_ID, BANK_NAME);
     })
     .catch(next);
 });
@@ -332,7 +336,7 @@ app.get('/api/balance', function (request, response, next) {
       const balanceResponse = await client.accountsBalanceGet({
         access_token: ACCESS_TOKEN,
       });
-      generateCreditCardSQL(balanceResponse);
+      database.generateCreditCardSQL(balanceResponse);
       prettyPrintResponse(balanceResponse);
       response.json(balanceResponse.data);
       
@@ -652,13 +656,23 @@ app.get("/api/is_account_connected", (req, res) => {
 //database queries
 app.get('/api/accountData', async (req, res) => {
   try {
-      const accounts = await fetchAccounts();
+      const accounts = await database.fetchAccounts();
       res.json(accounts);
   } catch (error) {
-      res.status(500).send('Failed to fetch accounts');
+      res.status(500).json({ error: "Failed to fetch accounts", details: error.toString() });
+      // console.error("Error fetching accounts:", error);
   }
 });
 
 
+app.get('/api/bankData', async (req, res) => {
+  try {
+      const banks = await database.fetchBanks();
+      res.json(banks);
+  } catch (error) {
+      res.status(500).json({ error: "Failed to fetch Banks", details: error.toString() });
+      // console.error("Error fetching accounts:", error);
+  }
+});
 
 
