@@ -20,8 +20,8 @@ app.use(
   session({ secret: "bosco", saveUninitialized: true, resave: true })
 );
 
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get("/", async (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));

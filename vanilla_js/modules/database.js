@@ -51,7 +51,16 @@ async function storeAccessToken(ACCESS_TOKEN, ITEM_ID, BANK_NAME) {
 
 
 
-
+async function getAccessTokenFromDB(banksId) {
+    // Replace with your database query logic
+    const query = 'SELECT * FROM banks WHERE id = ?';
+    const [rows] = await pool.query(query, [banksId]);
+    if (rows.length === 0) {
+      throw new Error('No access token found for this user');
+    }
+    return rows[0].access_token;
+} 
+  
 
 
 
@@ -67,5 +76,6 @@ module.exports = {
     fetchAccounts,
     generateCreditCardSQL,
     storeAccessToken,
-    fetchBanks
+    fetchBanks,
+    getAccessTokenFromDB
 };

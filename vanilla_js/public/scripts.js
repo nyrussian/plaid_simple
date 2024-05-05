@@ -110,13 +110,19 @@ function updateBanksTable(banks) {
         item_id.textContent = bank.item_id;
         bank_name.textContent = bank.bank_name;
         token.textContent = bank.access_token;
-        action.innerHTML = '<button onclick="refreshRow(this)">Refresh</button> <button onclick="deleteRow(this)">Delete</button>';
+        action.innerHTML = '<button onclick="getBankRowID(this)">Fetch Liabilities</button> <button onclick="refreshRow(this)">Refresh</button> <button onclick="deleteRow(this)">Delete</button> ';
 
 
         
     });
 }
-
+//get bank row id form first colomn will have to update when hiding id
+function getBankRowID(button) {
+  let row = button.parentNode.parentNode;
+  let rowId = row.cells[0].textContent; // Assuming the ID is in the first cell of the row
+  // Call your function with the row ID
+  fetchLiabilities(rowId);
+}
 function updateAccountsTable(accounts) {
     const tableBody = document.getElementById('accountsTable').getElementsByTagName('tbody')[0];
     tableBody.innerHTML = ''; // Clear existing table rows
@@ -190,6 +196,9 @@ fetchAccountsButton.addEventListener("click", fetchAccounts);
 const fetchBanksButton = document.getElementById("fetch_banks");
 fetchBanksButton.addEventListener("click", fetchBanks);
 
+const fetchLiabilitiesButton = document.getElementById("fetch_liabilities");
+fetchLiabilitiesButton.addEventListener("click", testFunction);
+
 
     async function fetchBanks() {
       try {
@@ -216,6 +225,31 @@ fetchBanksButton.addEventListener("click", fetchBanks);
         console.error(error);
       }
     }
+
+    
+    async function fetchLiabilities(banks_id) {
+      try {
+        // Send the bank ID via the POST body
+        const response = await fetch('/api/liabilities', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ banks_id })
+        });
+        const data = await response.json();
+        const dbDataElement = document.getElementById("db_data");
+        dbDataElement.innerHTML = JSON.stringify(data, null, 2);
+
+        console.log(data);
+      } catch (error) {
+        console.error('Error fetching liabilities:', error);
+      }
+    }
+    
+    
+
+    
    function testFunction() {
-     alert("Hello, World!");
+     alert("Test Successful");
    }

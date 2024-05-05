@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 const moment = require('moment');
 const cors = require('cors');
 const path = require("path");
-const database = require('./database');
+const database = require('./modules/database');
 
 
 
@@ -364,16 +364,42 @@ app.get('/api/holdings', function (request, response, next) {
 
 // Retrieve Liabilities for an Item
 // https://plaid.com/docs/#liabilities
-app.get('/api/liabilities', function (request, response, next) {
-  Promise.resolve()
-    .then(async function () {
-      const liabilitiesResponse = await client.liabilitiesGet({
-        access_token: ACCESS_TOKEN,
-      });
-      prettyPrintResponse(liabilitiesResponse);
-      response.json({ error: null, liabilities: liabilitiesResponse.data });
-    })
-    .catch(next);
+// app.get('/api/liabilities', function (request, response, next) {
+//   Promise.resolve()
+//     .then(async function () {
+//       const liabilitiesResponse = await client.liabilitiesGet({
+//         access_token: ACCESS_TOKEN,
+//       });
+//       prettyPrintResponse(liabilitiesResponse);
+//       response.json({ error: null, liabilities: liabilitiesResponse.data });
+//     })
+//     .catch(next);
+// });
+
+// Endpoint to get liabilities
+
+app.post('/api/liabilities', async function (req, res, next) {
+  try {
+    // Extract the bank ID from the request body
+    const banksId = req.body.banks_id;
+
+    if (!banksId) {
+      return res.status(400).json({ error: 'Bank ID is required' });
+    }
+
+    // Retrieve the access token from your database based on the banksId
+    const accessToken = await database.getAccessTokenFromDB(banksId);
+
+    // Call the Plaid API using the access token
+    const liabilitiesResponse = await client.liabilitiesGet({
+      access_token: accessToken
+    });
+
+    prettyPrintResponse(liabilitiesResponse);
+    res.json({ error: null, liabilities: liabilitiesResponse.data });
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Retrieve information about an Item
