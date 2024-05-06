@@ -188,13 +188,16 @@ function updateAccountsTable(accounts) {
     //   return data;
     // }
 
- 
+ document.addEventListener('DOMContentLoaded', () => {
+   fetchAccounts();
+   fetchBanks();
+ });
 // Correct assignment for the event listeners
-const fetchAccountsButton = document.getElementById("fetch_accounts");
-fetchAccountsButton.addEventListener("click", fetchAccounts);
+// const fetchAccountsButton = document.getElementById("fetch_accounts");
+// fetchAccountsButton.addEventListener("click", fetchAccounts);
 
-const fetchBanksButton = document.getElementById("fetch_banks");
-fetchBanksButton.addEventListener("click", fetchBanks);
+// const fetchBanksButton = document.getElementById("fetch_banks");
+// fetchBanksButton.addEventListener("click", fetchBanks);
 
 const fetchLiabilitiesButton = document.getElementById("fetch_liabilities");
 fetchLiabilitiesButton.addEventListener("click", testFunction);

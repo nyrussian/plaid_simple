@@ -1,5 +1,6 @@
 require('dotenv').config();
 const mysql = require('mysql2/promise');
+const controller = require('../controllers/controller');
 
 // MySQL connection setup
 const pool = mysql.createPool({
@@ -11,6 +12,7 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     queueLimit: 0
 });
+exports.pool = pool;
 
 async function fetchAccounts() {
     const query = 'SELECT * FROM accounts';
@@ -24,18 +26,32 @@ async function fetchBanks() {
   return row;
 }
 
-function generateCreditCardSQL(data) {
-    // // Iterate through each account
-    // data.accounts.forEach(account => {
-    //   if (account.subtype === "credit card") {
-    //     // Create an SQL query for the credit card account
-    //     const sql = `INSERT INTO accounts (account_id, account_name, statement_bal, credit_limit) VALUES 
-    //     ('${account.account_id}', '${account.name}', ${account.balances.current}, ${account.balances.limit});`;
-    //     console.log(sql);
-    //     // You can execute the SQL here using your database library, or collect these queries to execute later
-    //   }
-    // });
-    return data//temp to ignore function
+// Function to check if an account exists
+async function accountExists(accountId) {
+    const query = 'SELECT COUNT(*) AS count FROM accounts WHERE account_id = ?';
+    const [rows] = await pool.query(query, [accountId]);
+    return rows[0].count > 0;
+}
+///
+async function getAccountById(account_id) {
+    const query = 'SELECT * FROM accounts WHERE account_id = ?';
+    const [rows] = await pool.execute(query, [account_id]);
+    return rows.length > 0 ? rows[0] : null;
+}
+
+
+async function updateAccount(account) {
+    const query = `
+        UPDATE accounts
+        SET account_name = ?, statement_bal = ?, credit_limit = ?
+        WHERE account_id = ?`;
+    await pool.execute(query, [account.name, account.balances.current, account.balances.limit, account.account_id]);
+}
+async function insertAccount(account) {
+    const query = `
+        INSERT INTO accounts (account_id, account_name, statement_bal, credit_limit)
+        VALUES (?, ?, ?, ?)`;
+    await pool.execute(query, [account.account_id, account.name, account.balances.current, account.balances.limit]);
 }
 
 async function storeAccessToken(ACCESS_TOKEN, ITEM_ID, BANK_NAME) {
@@ -74,8 +90,13 @@ async function getAccessTokenFromDB(banksId) {
 
 module.exports = {
     fetchAccounts,
-    generateCreditCardSQL,
+    // generateCreditCardSQL,
     storeAccessToken,
     fetchBanks,
-    getAccessTokenFromDB
+    getAccessTokenFromDB,
+    accountExists,
+    insertAccount,
+    updateAccount,
+    getAccountById
+   
 };

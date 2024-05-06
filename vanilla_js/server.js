@@ -12,6 +12,7 @@ const moment = require('moment');
 const cors = require('cors');
 const path = require("path");
 const database = require('./modules/database');
+const controller = require('./controllers/controller');
 
 
 
@@ -362,21 +363,7 @@ app.get('/api/holdings', function (request, response, next) {
     .catch(next);
 });
 
-// Retrieve Liabilities for an Item
-// https://plaid.com/docs/#liabilities
-// app.get('/api/liabilities', function (request, response, next) {
-//   Promise.resolve()
-//     .then(async function () {
-//       const liabilitiesResponse = await client.liabilitiesGet({
-//         access_token: ACCESS_TOKEN,
-//       });
-//       prettyPrintResponse(liabilitiesResponse);
-//       response.json({ error: null, liabilities: liabilitiesResponse.data });
-//     })
-//     .catch(next);
-// });
 
-// Endpoint to get liabilities
 
 app.post('/api/liabilities', async function (req, res, next) {
   try {
@@ -394,7 +381,7 @@ app.post('/api/liabilities', async function (req, res, next) {
     const liabilitiesResponse = await client.liabilitiesGet({
       access_token: accessToken
     });
-
+    controller.generateCreditCardSQL(liabilitiesResponse);
     prettyPrintResponse(liabilitiesResponse);
     res.json({ error: null, liabilities: liabilitiesResponse.data });
   } catch (error) {
